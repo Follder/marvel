@@ -1,0 +1,13 @@
+@import '../../utils/grid.scss';
+
+.hero-list {
+  @include page-grid;
+
+  grid-column: 1 / -1;
+
+  @include on-desctop {
+    --columns: 9;
+
+    grid-column: 1 / 10;
+  }
+}
