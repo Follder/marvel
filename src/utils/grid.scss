@@ -9,7 +9,7 @@ $desctop--min-width: 1160px;
 }
 
 @mixin on-laptop {
-  @media (min-width: $tablet--min-width) {
+  @media (min-width: $laptop--min-width) {
     @content;
   }
 }

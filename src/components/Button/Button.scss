@@ -1,13 +1,20 @@
 @import '../../utils/colors.scss';
 
 .button {
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: 400;
-  color: $white;
+  &__elem {
+      font-size: 14px;
+      text-transform: uppercase;
+      font-weight: 400;
+      color: $white;
+    
+      border: none;  
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    
+      cursor: pointer;
+  }
 
-  border: none;
-  
-  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
-
+  &:hover {
+    transition: .3s transform;
+    transform: scale(1.1);
+  }
 }

@@ -1,0 +1,23 @@
+@import '../../utils/colors.scss';
+@import '../../utils/grid.scss';
+
+.banner-comics {
+  grid-column: 1 / -1;
+  display: none;
+
+  @include on-desctop {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  height: 100px;
+  width: 100%;
+  background-color: $accent;
+
+  color: $white;
+  font-size: 24px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
