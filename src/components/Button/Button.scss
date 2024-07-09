@@ -1,7 +1,9 @@
 @import '../../utils/colors.scss';
 
 .button {
+  
   &__elem {
+      font-family: 'Roboto Condensed', sans-serif;
       font-size: 14px;
       text-transform: uppercase;
       font-weight: 400;
