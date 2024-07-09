@@ -1,0 +1,59 @@
+@import '../../utils/colors.scss';
+@import '../../utils/grid.scss';
+
+.form {
+  grid-column: 1 / -1;
+
+  @include on-desctop {
+    grid-column: 11 / -1;
+  }
+
+  padding: 25px;
+
+  box-shadow: $box-shadow;
+  
+  &__title {
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    margin-top: 18px;
+  }
+
+  &__input {
+    height: 38px;
+    border: none;
+    width: 100%;
+    box-shadow: $line-shadow;
+
+    padding: 10px;
+
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  &__error {
+    font-size: 18px;
+    font-weight: 800;
+    color: $main;
+
+    margin-top: 25px;
+  }
+
+  &__message {
+    font-size: 18px;
+    font-weight: 800;
+    color: $success;
+
+    margin-top: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

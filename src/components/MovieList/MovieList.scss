@@ -1,0 +1,27 @@
+@import '../../utils/colors.scss';
+
+.movie-list {
+  margin-top: 38px;
+  &__title {
+    font-weight: 800;
+    font-size: 18px;
+    color: $black;
+  }
+
+  &__movies {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    margin-top: 16px;
+  }
+
+  &__movie {
+    padding: 5px 10px;
+    box-shadow: $line-shadow;
+
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 120%;
+  }
+}

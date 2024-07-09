@@ -1,0 +1,58 @@
+@import '../../utils/grid.scss';
+@import '../../utils/colors.scss';
+
+.hero-detail {
+  text-align: left;
+  padding: 10px 16px;
+
+  grid-column: 1 / -1;
+
+  @include on-tablet {
+    box-shadow: $box-shadow;
+  }
+
+  @include on-desctop {
+    grid-column: 11 / -1;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  &__img {
+    grid-column: span 2;
+    height: 175px;
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__name {
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  &__btns {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__description {
+    margin-top: 16px;
+
+    font-size: 14px;
+    line-height: 120%; 
+  }
+}
