@@ -12,6 +12,15 @@
   box-shadow: $box-shadow;
 
   margin-bottom: 50px;
+  align-items: center;
+
+  &__loader {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+  }
 
   &__left {
     width: 50%;

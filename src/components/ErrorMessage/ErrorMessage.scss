@@ -1,0 +1,22 @@
+@import '../../utils/colors.scss';
+
+.error{
+  &__background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-image: url('./1280.jpg');
+    background-size: cover;
+    background-position: center center;
+
+    width: 50%;
+    height: 100%;
+  }
+
+  &__text{
+    padding: 10px 30px;
+    background-color: $main;
+    color: $white;
+  }
+}
