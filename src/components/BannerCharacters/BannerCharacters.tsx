@@ -8,11 +8,6 @@ import { ErrorMessage } from "../ErrorMessage/ErrorMessage";
 import cn from "classnames";
 
 export class BannerCharacters extends Component {
-  constructor(props: any) {
-    super(props);
-    console.log('constructor');
-  }
-
   state = {
     char: {
       name: "",
@@ -42,12 +37,7 @@ export class BannerCharacters extends Component {
   };
 
   componentDidMount(): void {
-    console.log('mount');
     this.updateChar();
-  }
-
-  componentWillUnmount(): void {
-    console.log('unmount');
   }
 
   handleUpdateByClick = () => {
@@ -56,8 +46,6 @@ export class BannerCharacters extends Component {
   }
 
   render() {
-
-    console.log('render');
     const { char, loading, error } = this.state;
 
     const load = loading ? (

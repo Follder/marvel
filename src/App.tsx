@@ -8,8 +8,6 @@ import { BannerCharacters } from './components/BannerCharacters/BannerCharacters
 import { Form } from './components/Form/Form';
 
 function App() {
-  console.log('parent render');
-
   return (
     <div className="App">
       <Header />
