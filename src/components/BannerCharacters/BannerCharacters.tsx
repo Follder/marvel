@@ -10,11 +10,13 @@ import cn from "classnames";
 export class BannerCharacters extends Component {
   state = {
     char: {
+      id: 0,
       name: "",
       description: "",
       thumbnail: "",
       homepage: "",
       wiki: "",
+      comics: [],
     },
     loading: true,
     error: false,
@@ -92,7 +94,6 @@ export const View: React.FC<Props> = ({ char }) => {
   const { name, description, thumbnail, homepage, wiki } = char;
   
   let descr = description;
-    descr = descr.length === 0 ? "Unfortunally, information about this character was deleted from Avenger`s servers" : descr;
     descr = descr.length > 300 ? descr.slice(0, 300) + "..." : descr;
 
   const isNotAvailible = thumbnail.includes("image_not_available")

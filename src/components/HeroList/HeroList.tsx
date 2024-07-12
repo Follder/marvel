@@ -11,7 +11,11 @@ interface HeroListState {
   error: string | null;
 }
 
-export class HeroList extends Component<{}, HeroListState> {
+interface props {
+  setHero: (char: Character) => void
+}
+
+export class HeroList extends Component<props, HeroListState> {
   state = {
     characters: [],
     loading: true,
@@ -30,7 +34,6 @@ export class HeroList extends Component<{}, HeroListState> {
 
   
   render() {
-    console.log(this.state.characters);
     if (!this.state.characters) {
       throw new Error ('new error')
     }
@@ -39,7 +42,7 @@ export class HeroList extends Component<{}, HeroListState> {
       <div className="hero-list">
         {this.state.characters.map((char: Character) => {
           return (
-            <HeroItem name={char.name} thumbnail={char.thumbnail} key={char.id} />
+            <HeroItem char={char} setHero={this.props.setHero} key={char.id} />
           )
         })}
         {/* <HeroItem src="http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg" alt="Loki-hero" name="Loki" /> */}

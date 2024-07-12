@@ -15,42 +15,30 @@ export class MarvelService {
   }
 
   getAllCharacters = async () => {
-    const res = await this.getResource(`${this._apiBase}/characters?limit=9&offset=250&${this._apiKey}`);
+    const characters = await this.getResource(`${this._apiBase}/characters?limit=9&offset=250&${this._apiKey}`);
 
-    const characters :Character[] = [];
-    
-    res.data.results.forEach((item: any) => {
-      const char: Character = {
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        thumbnail: `${item.thumbnail.path}.${item.thumbnail.extension}`,
-        homepage: item.urls[0].url,
-        wiki: item.urls[1].url,
-      }
+    console.log(characters);
 
-      characters.push((char));
-    });
-
-    return characters;
+    return characters.data.results.map(this._transformCharacter);
   }
 
   getCharacter = async (id: number) => {
     const character = await this.getResource(`${this._apiBase}/characters/${id}?${this._apiKey}`)
 
-    // window.console.log(character);
-
-    return this._transformCharacter(character);
+    return this._transformCharacter(character.data.results[0]);
   }
 
-  _transformCharacter = (res: any): Character => {
+  _transformCharacter = (char: any): Character => {
+    const description = char.description.length === 0 ? "Unfortunally, information about this character was deleted from Avenger`s servers" : char.description;
+
     return {
-      id: res.data.results[0].id,
-      name: res.data.results[0].name,
-      description: res.data.results[0].description,
-      thumbnail: `${res.data.results[0].thumbnail.path}.${res.data.results[0].thumbnail.extension}`,
-      homepage: res.data.results[0].urls[0].url,
-      wiki: res.data.results[0].urls[1].url,
+      id: char.id,
+      name: char.name,
+      description: description,
+      thumbnail: `${char.thumbnail.path}.${char.thumbnail.extension}`,
+      homepage: char.urls[0].url,
+      wiki: char.urls[1].url,
+      comics: char.comics.items,
     }
   }
 }

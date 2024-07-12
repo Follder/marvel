@@ -3,9 +3,10 @@
 
 .hero-detail {
   text-align: left;
-  padding: 10px 16px;
+  padding: 20px;
 
   grid-column: 1 / -1;
+  height: fit-content;
 
   @include on-tablet {
     box-shadow: $box-shadow;
@@ -29,6 +30,17 @@
       height: 100%;
       width: 100%;
       object-fit: cover;
+      aspect-ratio: 1;
+    }
+
+    &_pos {
+      &-center {
+        object-position: center;
+      }
+
+      &-left {
+        object-position: left;
+      }
     }
   }
 
