@@ -1,28 +1,53 @@
 import React from "react";
-import './HeroDetail.scss';
+import "./HeroDetail.scss";
+import cn from "classnames";
 import { Button } from "../Button/Button";
 import { MovieList } from "../MovieList/MovieList";
+import { Character } from "../../types/Character";
 
-export const HeroDetail = () => {
+interface Props {
+  char: Character;
+}
+
+export const HeroDetail: React.FC<Props> = ({ char }) => {
+  const { name, description, thumbnail, homepage, wiki, comics } = char;
+
+  const isNotAvailible = char.thumbnail.includes("image_not_available")
+    ? true
+    : false;
+
   return (
     <div className="hero-detail">
       <div className="hero-detail__header">
         <div className="hero-detail__img">
-          <img src="http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg" alt="hero-name" />
+          <img
+            src={thumbnail}
+            alt={name}
+            className={cn("hero-item__image_pos-center", {
+              "hero-item__image_pos-left": isNotAvailible,
+            })}
+          />
         </div>
         <div className="hero-detail__wrapper">
-          <h2 className="hero-detail__name">Loki</h2>
+          <h2 className="hero-detail__name">{name}</h2>
           <div className="hero-detail__btns">
-            <Button width="102px" height="38px" color="#9F0013" text="homepage" />
-            <Button width="102px" height="38px" color="#5C5C5C" text="wiki"/>
+            <a href={homepage}>
+              <Button
+                width="102px"
+                height="38px"
+                color="#9F0013"
+                text="homepage"
+              />
+            </a>
+            <a href={wiki}>
+              <Button width="102px" height="38px" color="#5C5C5C" text="wiki" />
+            </a>
           </div>
         </div>
       </div>
-      <div className="hero-detail__description">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas dolores accusamus quam ex, reprehenderit dicta nulla consequuntur sed. Voluptatibus expedita dolorum quae veniam, dignissimos asperiores temporibus quidem similique voluptate architecto.
-      </div>
+      <div className="hero-detail__description">{description}</div>
 
-      <MovieList />
+      <MovieList comics={comics} />
     </div>
-  )
-}
+  );
+};

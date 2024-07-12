@@ -1,29 +1,30 @@
 import React from "react";
 import "./HeroItem.scss";
 import cn from "classnames";
+import { Character } from "../../types/Character";
 
 type Props = {
-  thumbnail: string;
-  name: string;
+  char: Character
+  setHero: (char: Character) => void;
 };
 
-export const HeroItem: React.FC<Props> = ({ name, thumbnail }) => {
-  const isNotAvailible = thumbnail.includes("image_not_available")
+export const HeroItem: React.FC<Props> = ({ char, setHero }) => {
+  const isNotAvailible = char.thumbnail.includes("image_not_available")
     ? true
     : false;
 
   return (
-    <a href="#" className="hero-item">
+    <div onClick={() => setHero(char)} className="hero-item">
       <div className="hero-item__image">
         <img
-          src={thumbnail}
-          alt={name}
+          src={char.thumbnail}
+          alt={char.name}
           className={cn("hero-item__image_pos-center", {
             "hero-item__image_pos-left": isNotAvailible,
           })}
         />
       </div>
-      <h3 className="hero-item__name">{name}</h3>
-    </a>
+      <h3 className="hero-item__name">{char.name}</h3>
+    </div>
   );
 };

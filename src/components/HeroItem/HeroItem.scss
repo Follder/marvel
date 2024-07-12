@@ -9,6 +9,7 @@
   min-height: 250px;
   background-color: $accent;
   box-shadow: $card-shadow;
+  cursor: pointer;
 
   text-align: left;
 
@@ -47,7 +48,7 @@
     color: $white;
     text-transform: uppercase;
 
-    margin-left: 14px;
+    margin-inline: 14px;
 
     word-wrap: break-word;
     overflow-wrap: break-word;
