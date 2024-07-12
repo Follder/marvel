@@ -9,22 +9,14 @@ import { Form } from './components/Form/Form';
 import { Character } from './types/Character';
 
 interface HeroDetailState {
-  char: Character,
+  char: Character | null,
   loading: boolean,
   error: string | null,
 }
 
 class App extends Component<{}, HeroDetailState> {
   state: HeroDetailState = {
-    char: {
-      id: 0,
-      name: '',
-      description: '',
-      thumbnail: '',
-      homepage: '',
-      wiki: '',
-      comics: [],
-    },
+    char: null,
     loading: true,
     error: null,
   };
@@ -44,7 +36,7 @@ class App extends Component<{}, HeroDetailState> {
         <BannerCharacters />
   
         <HeroList setHero={this.setHero} />
-        <HeroDetail char={this.state.char} />
+        <HeroDetail loading={this.state.loading} char={this.state.char} />
         <Form />
       </div>
     );

@@ -4,17 +4,29 @@ import cn from "classnames";
 import { Button } from "../Button/Button";
 import { MovieList } from "../MovieList/MovieList";
 import { Character } from "../../types/Character";
+import { Skeleton } from "../Skeleton/Skeleton";
 
 interface Props {
-  char: Character;
+  char: Character | null;
+  loading: boolean;
 }
 
 export const HeroDetail: React.FC<Props> = ({ char }) => {
+  if (!char) {
+    return (
+      <div className="hero-detail">
+        <Skeleton />
+      </div>
+    );
+  }
+
   const { name, description, thumbnail, homepage, wiki, comics } = char;
 
   const isNotAvailible = char.thumbnail.includes("image_not_available")
     ? true
     : false;
+
+  window.console.log({ char });
 
   return (
     <div className="hero-detail">
