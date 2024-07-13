@@ -5,7 +5,7 @@ import { Character } from "../../types/Character";
 
 type Props = {
   char: Character
-  setHero: (char: Character) => void;
+  setHero: (charId: number) => void;
 };
 
 export const HeroItem: React.FC<Props> = ({ char, setHero }) => {
@@ -14,7 +14,7 @@ export const HeroItem: React.FC<Props> = ({ char, setHero }) => {
     : false;
 
   return (
-    <div onClick={() => setHero(char)} className="hero-item">
+    <div onClick={() => setHero(char.id)} className="hero-item">
       <div className="hero-item__image">
         <img
           src={char.thumbnail}

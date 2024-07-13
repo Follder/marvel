@@ -16,6 +16,11 @@
     grid-column: 11 / -1;
   }
 
+  &__loader {
+    display: flex;
+    justify-content: center;
+  }
+
   &__header {
     display: flex;
     flex-direction: row;

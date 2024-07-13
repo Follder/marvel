@@ -7,19 +7,23 @@ import { Character } from "../../types/Character";
 import { Loader } from "../Loader/Loader";
 import { Button } from "../Button/Button";
 
-interface HeroListState {
+interface State {
   characters: Character[];
+  newCharacters: Character[];
+  startCharacterNumber: number;
   loading: boolean;
   error: string | null;
 }
 
-interface props {
-  setHero: (char: Character) => void;
+interface Props {
+  setHero: (charId: number) => void;
 }
 
-export class HeroList extends Component<props, HeroListState> {
+export class HeroList extends Component<Props, State> {
   state = {
     characters: [],
+    newCharacters: [],
+    startCharacterNumber: 250,
     loading: true,
     error: null,
   };
@@ -31,6 +35,19 @@ export class HeroList extends Component<props, HeroListState> {
       .getAllCharacters()
       .then((res) => this.setState({ characters: res, loading: false }));
   };
+
+  getNewCharacters = (characters: Character[]) => {
+    this.marvelService
+    .getAllCharacters(this.state.startCharacterNumber)
+      .then((res) => this.setState({ characters: [...characters, ...res], loading: false }));
+    
+    this.setState({startCharacterNumber: this.state.startCharacterNumber + 9})
+  };
+
+  handleNewCaracters = () => {
+    this.getNewCharacters(this.state.characters)
+  }
+
   componentDidMount(): void {
     this.getCharacters();
   }
@@ -39,6 +56,8 @@ export class HeroList extends Component<props, HeroListState> {
     if (!this.state.characters) {
       throw new Error("new error");
     }
+
+    window.console.log(this.state.startCharacterNumber);
 
     return (
       <div className="hero-list">
@@ -58,7 +77,7 @@ export class HeroList extends Component<props, HeroListState> {
           })
         )}
 
-        <div className="hero-list__button">
+        <div className="hero-list__button" onClick={() => this.handleNewCaracters()}>
           <Button text="load more" />
         </div>
       </div>

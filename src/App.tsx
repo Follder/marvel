@@ -5,24 +5,22 @@ import './App.scss';
 import './utils/normilize.scss';
 import { Header } from './components/Header/Header';
 import { BannerCharacters } from './components/BannerCharacters/BannerCharacters';
-import { Form } from './components/Form/Form';
-import { Character } from './types/Character';
 
 interface HeroDetailState {
-  char: Character | null,
+  charId: number | null,
   loading: boolean,
   error: string | null,
 }
 
 class App extends Component<{}, HeroDetailState> {
   state: HeroDetailState = {
-    char: null,
+    charId: null,
     loading: true,
     error: null,
   };
 
-  setHero = (char: Character) => {
-    this.setState({ char });
+  setHero = (charId: number) => {
+    this.setState({ charId });
   };
 
   setLoading = (loading: boolean) => {
@@ -30,8 +28,8 @@ class App extends Component<{}, HeroDetailState> {
   };
 
   render() {
-    if (this.state.char) {
-      console.log(this.state.char.id);
+    if (this.state.charId) {
+      console.log(this.state.charId);
     }
 
     return (
@@ -40,7 +38,7 @@ class App extends Component<{}, HeroDetailState> {
         <BannerCharacters />
   
         <HeroList setHero={this.setHero} />
-        <HeroDetail loading={this.state.loading} setLoading={this.setLoading} char={this.state.char} />
+        <HeroDetail charId={this.state.charId} />
       </div>
     );
   }

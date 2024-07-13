@@ -10,6 +10,9 @@
     --columns: 9;
 
     grid-column: 1 / 10;
+
+    grid-template-rows: auto;
+    grid-auto-rows: auto;
   }
 
   &__loader {
@@ -19,19 +22,6 @@
     justify-content: center;
     align-items: center;
   }
-
-  // &__wrapper {
-  //   grid-column: 1 / -1;
-
-  //   @include page-grid;
-
-  //   @include on-desctop {
-  //     --columns: 9;
-  //     grid-template-columns: repeat(var(--columns), 1fr);
-  //     grid-template-rows: 320px;
-  //     grid-auto-rows: 320px;
-  //   }
-  // }
 
   &__button {
     display: flex;
