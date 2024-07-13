@@ -25,6 +25,10 @@ class App extends Component<{}, HeroDetailState> {
     this.setState({ char });
   };
 
+  setLoading = (loading: boolean) => {
+    this.setState({ loading });
+  };
+
   render() {
     if (this.state.char) {
       console.log(this.state.char.id);
@@ -36,8 +40,7 @@ class App extends Component<{}, HeroDetailState> {
         <BannerCharacters />
   
         <HeroList setHero={this.setHero} />
-        <HeroDetail loading={this.state.loading} char={this.state.char} />
-        <Form />
+        <HeroDetail loading={this.state.loading} setLoading={this.setLoading} char={this.state.char} />
       </div>
     );
   }
