@@ -1,9 +1,11 @@
 import { Component } from "react";
 import { HeroItem } from "../HeroItem/HeroItem";
 import React from "react";
-import './HeroList.scss';
+import "./HeroList.scss";
 import { MarvelService } from "../../services/MarvelService";
 import { Character } from "../../types/Character";
+import { Loader } from "../Loader/Loader";
+import { Button } from "../Button/Button";
 
 interface HeroListState {
   characters: Character[];
@@ -12,7 +14,7 @@ interface HeroListState {
 }
 
 interface props {
-  setHero: (char: Character) => void
+  setHero: (char: Character) => void;
 }
 
 export class HeroList extends Component<props, HeroListState> {
@@ -20,34 +22,46 @@ export class HeroList extends Component<props, HeroListState> {
     characters: [],
     loading: true,
     error: null,
-  }
+  };
 
   marvelService = new MarvelService();
 
   getCharacters = () => {
-    this.marvelService.getAllCharacters()
-      .then(res => this.setState({characters: res}));
-  }
+    this.marvelService
+      .getAllCharacters()
+      .then((res) => this.setState({ characters: res, loading: false }));
+  };
   componentDidMount(): void {
     this.getCharacters();
   }
 
-  
   render() {
     if (!this.state.characters) {
-      throw new Error ('new error')
+      throw new Error("new error");
     }
 
     return (
       <div className="hero-list">
-        {this.state.characters.map((char: Character) => {
-          return (
-            <HeroItem char={char} setHero={this.props.setHero} key={char.id} />
-          )
-        })}
-        {/* <HeroItem src="http://i.annihil.us/u/prod/marvel/i/mg/c/e0/535fecbbb9784.jpg" alt="Loki-hero" name="Loki" /> */}
+        {this.state.loading ? (
+          <div className="hero-list__loader">
+            <Loader />
+          </div>
+        ) : (
+          this.state.characters.map((char: Character) => {
+            return (
+              <HeroItem
+                char={char}
+                setHero={this.props.setHero}
+                key={char.id}
+              />
+            );
+          })
+        )}
 
+        <div className="hero-list__button">
+          <Button text="load more" />
+        </div>
       </div>
-    )
+    );
   }
 }
