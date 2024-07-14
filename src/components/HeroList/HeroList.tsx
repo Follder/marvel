@@ -9,10 +9,10 @@ import { Button } from "../Button/Button";
 
 interface State {
   characters: Character[];
-  newCharacters: Character[];
-  startCharacterNumber: number;
   loading: boolean;
   error: string | null;
+  offset: number;
+  newLoading: boolean;
 }
 
 interface Props {
@@ -22,51 +22,72 @@ interface Props {
 export class HeroList extends Component<Props, State> {
   state = {
     characters: [],
-    newCharacters: [],
-    startCharacterNumber: 250,
     loading: true,
     error: null,
+    offset: 230,
+    newLoading: false,
   };
 
   marvelService = new MarvelService();
 
-  getCharacters = () => {
-    this.marvelService
-      .getAllCharacters()
-      .then((res) => this.setState({ characters: res, loading: false }));
+  getCharacters = (offset: number) => {
+    this.setState({ newLoading: true });
+    this.marvelService.getAllCharacters(offset).then(this.onCharListLoaded);
   };
 
-  getNewCharacters = (characters: Character[]) => {
-    this.marvelService
-    .getAllCharacters(this.state.startCharacterNumber)
-      .then((res) => this.setState({ characters: [...characters, ...res], loading: false }));
-    
-    this.setState({startCharacterNumber: this.state.startCharacterNumber + 9})
+  isSimilar = (res: Character[], characters: Character[]): boolean => {
+    return res.some((newChar) =>
+      characters.some((existingChar) => newChar.id === existingChar.id)
+    );
+  };
+
+  onCharListLoaded = (res: Character[]) => {
+    this.setState(({ characters, offset }) => {
+      const isSimilar = this.isSimilar(res, characters);
+
+      if (isSimilar) {
+        return {
+          characters: [...characters],
+          loading: false,
+          offset: offset,
+          newLoading: false,
+        };
+      }
+
+      return {
+        characters: [...characters, ...res],
+        loading: false,
+        offset: offset + 9,
+        newLoading: false,
+      };
+    });
   };
 
   handleNewCaracters = () => {
-    this.getNewCharacters(this.state.characters)
-  }
+    this.getCharacters(this.state.offset);
+  };
 
   componentDidMount(): void {
-    this.getCharacters();
+    this.getCharacters(this.state.offset);
   }
 
   render() {
-    if (!this.state.characters) {
+    const { characters, newLoading, loading } = this.state;
+
+    console.log(newLoading);
+
+    if (!characters) {
       throw new Error("new error");
     }
 
-    window.console.log(this.state.startCharacterNumber);
-
     return (
       <div className="hero-list">
-        {this.state.loading ? (
+        {loading ? (
           <div className="hero-list__loader">
             <Loader />
           </div>
         ) : (
-          this.state.characters.map((char: Character) => {
+          characters.map((char: Character) => {
             return (
               <HeroItem
                 char={char}
@@ -77,8 +98,11 @@ export class HeroList extends Component<Props, State> {
           })
         )}
 
-        <div className="hero-list__button" onClick={() => this.handleNewCaracters()}>
-          <Button text="load more" />
+        <div
+          className="hero-list__button"
+          onClick={() => this.handleNewCaracters()}
+        >
+          <Button text="load more" isDisabled={newLoading} />
         </div>
       </div>
     );
