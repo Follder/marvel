@@ -16,8 +16,7 @@ export const Button: React.FC<Props> = ({
   text,
   isDisabled = false,
 }) => {
-
-  const filter = isDisabled ? 'grayscale(0.5)' : '';
+  const filter = isDisabled ? "grayscale(0.5)" : "";
 
   const style = {
     width: width,
@@ -26,9 +25,7 @@ export const Button: React.FC<Props> = ({
     filter: filter,
   };
 
-  window.console.log(isDisabled);
   return (
-
     <div className="button">
       <button style={style} className="button__elem" disabled={isDisabled}>
         {text}

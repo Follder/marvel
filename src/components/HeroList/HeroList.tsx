@@ -17,6 +17,7 @@ interface State {
 
 interface Props {
   setHero: (charId: number) => void;
+  focusHero: number | null;
 }
 
 export class HeroList extends Component<Props, State> {
@@ -74,8 +75,6 @@ export class HeroList extends Component<Props, State> {
   render() {
     const { characters, newLoading, loading } = this.state;
 
-    console.log(newLoading);
-
     if (!characters) {
       throw new Error("new error");
     }
@@ -92,6 +91,7 @@ export class HeroList extends Component<Props, State> {
               <HeroItem
                 char={char}
                 setHero={this.props.setHero}
+                focusHero={this.props.focusHero}
                 key={char.id}
               />
             );

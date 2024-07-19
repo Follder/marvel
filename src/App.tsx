@@ -28,16 +28,13 @@ class App extends Component<{}, HeroDetailState> {
   };
 
   render() {
-    if (this.state.charId) {
-      console.log(this.state.charId);
-    }
 
     return (
       <div className="App">
         <Header />
         <BannerCharacters />
   
-        <HeroList setHero={this.setHero} />
+        <HeroList setHero={this.setHero} focusHero={this.state.charId} />
         <HeroDetail charId={this.state.charId} />
       </div>
     );
