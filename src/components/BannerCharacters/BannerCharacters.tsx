@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../Button/Button";
 import "./BannerCharacters.scss";
 import { Character } from "../../types/Character";
@@ -6,85 +6,74 @@ import { MarvelService } from "../../services/MarvelService";
 import { Loader } from "../Loader/Loader";
 import { ErrorMessage } from "../ErrorMessage/ErrorMessage";
 import cn from "classnames";
+import { sliceLongDescriptin } from "../../utils/sliceLongDescription";
 
-export class BannerCharacters extends Component {
-  state = {
-    char: {
-      id: 0,
-      name: "",
-      description: "",
-      thumbnail: "",
-      homepage: "",
-      wiki: "",
-      comics: [],
-    },
-    loading: true,
-    error: false,
+const emptyChar = {
+  id: 0,
+  name: "",
+  description: "",
+  thumbnail: "",
+  homepage: "",
+  wiki: "",
+  comics: [],
+};
+
+export const BannerCharacters = () => {
+  const [char, setChar] = useState<Character>(emptyChar);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const marvelService = new MarvelService();
+
+  const onCharLoaded = (char: Character) => {
+    setChar(char);
+    setLoading(false);
   };
 
-  marvelService = new MarvelService();
-
-  onCharLoaded = (char: Character) => {
-    this.setState({ char, loading: false });
-  };
-
-  updateChar = () => {
+  const updateChar = () => {
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-    this.marvelService
+
+    marvelService
       .getCharacter(id)
-      .then(this.onCharLoaded)
+      .then(onCharLoaded)
       .catch(() => {
-        this.setState({ error: true, loading: false });
+        setError(true);
+        setLoading(false);
       });
   };
 
-  componentDidMount(): void {
-    this.updateChar();
-  }
+  useEffect(() => {
+    updateChar();
+  }, []);
 
-  handleUpdateByClick = () => {
-    this.setState({ loading: true });
-    this.updateChar();
-  }
+  const handleUpdateByClick = () => {
+    setLoading(true);
+    updateChar();
+  };
 
-  render() {
-    const { char, loading, error } = this.state;
+  return (
+    <div className="banner-ch">
+      {loading && <div className="banner-ch__loader"><Loader /></div>  }
+      {error && <ErrorMessage text="Something wrong! Can`t load the hero" />}
+      {!(loading || error) && <View char={char} />}
 
-    const load = loading ? (
-      <div className="banner-ch__loader">
-        <Loader />
-      </div>
-    ) : (
-      false
-    );
-    const errorMessage = error ? (
-      <ErrorMessage text="Something wrong! Can`t load the hero" />
-    ) : (
-      false
-    );
-    const view = !(load || errorMessage) ? <View char={char} /> : null;
-
-    return (
-      <div className="banner-ch">
-        {load}
-        {errorMessage}
-        {view}
-
-        <div className="banner-ch__right">
-          <p className="banner-ch__right-promo">
-            Random character for today!
-            <br />
-            Do you want to get to know him better?
-          </p>
-          <p className="banner-ch__right-promo">Or choose another one</p>
-          <div className="banner-ch__right-buttons" onClick={this.handleUpdateByClick}>
-            <Button width="108px" height="38px" color="#9F0013" text="try it" />
-          </div>
+      <div className="banner-ch__right">
+        <p className="banner-ch__right-promo">
+          Random character for today!
+          <br />
+          Do you want to get to know him better?
+        </p>
+        <p className="banner-ch__right-promo">Or choose another one</p>
+        <div
+          className="banner-ch__right-buttons"
+          onClick={handleUpdateByClick}
+        >
+          <Button text="try it" />
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 type Props = {
   char: Character;
@@ -92,13 +81,8 @@ type Props = {
 
 export const View: React.FC<Props> = ({ char }) => {
   const { name, description, thumbnail, homepage, wiki } = char;
-  
-  let descr = description;
-    descr = descr.length > 300 ? descr.slice(0, 300) + "..." : descr;
-
-  const isNotAvailible = thumbnail.includes("image_not_available")
-    ? true
-    : false;
+  const descr = sliceLongDescriptin(description, 300);
+  const isNotAvailible = thumbnail.includes("image_not_available");
 
   return (
     <div className="banner-ch__left">

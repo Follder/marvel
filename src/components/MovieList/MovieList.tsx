@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import "./MovieList.scss";
 import { CharacterComics } from "../../types/Character";
 import { Button } from "../Button/Button";
@@ -7,37 +7,20 @@ interface Props {
   comics: CharacterComics[];
 }
 
-interface State {
-  isShortList: boolean;
-}
+export const MovieList: React.FC<Props> = ({ comics }) => {
+  const MAX_DISPLAYED_COMICS = 10;
+  const [isShortList, setIsShortList] = useState(comics.length > MAX_DISPLAYED_COMICS)
 
-export class MovieList extends Component<Props, State> {
-  MAX_DISPLAYED_COMICS: number;
+  useEffect(() => {
+    setIsShortList(comics.length > MAX_DISPLAYED_COMICS)
+  }, [comics])
 
-  constructor(props: Props) {
-    super(props);
-    this.MAX_DISPLAYED_COMICS = 10;
-    this.state = {
-      isShortList: props.comics.length > this.MAX_DISPLAYED_COMICS,
-    };
-  }
 
-  componentDidUpdate(prevProps: Props): void {
-    if (prevProps.comics !== this.props.comics) {
-      this.setState({
-        isShortList: this.props.comics.length > this.MAX_DISPLAYED_COMICS,
-      });
-    }
-  }
-
-  handleLoadMore = () => {
-    this.setState({ isShortList: false });
+  const handleLoadMore = () => {
+    setIsShortList(false);
   };
 
-  render() {
-    const { comics } = this.props;
-    const { isShortList } = this.state;
-    const displayedComics = isShortList ? comics.slice(0, this.MAX_DISPLAYED_COMICS) : comics;
+    const displayedComics = isShortList ? comics.slice(0, MAX_DISPLAYED_COMICS) : comics;
 
     return (
       <div className="movie-list">
@@ -49,8 +32,8 @@ export class MovieList extends Component<Props, State> {
                 {item.name}
               </li>
             ))}
-            {isShortList && comics.length > this.MAX_DISPLAYED_COMICS && (
-              <div className="movie-list__button" onClick={this.handleLoadMore}>
+            {isShortList && comics.length > MAX_DISPLAYED_COMICS && (
+              <div className="movie-list__button" onClick={handleLoadMore}>
                 <Button text="load more" />
               </div>
             )}
@@ -63,5 +46,4 @@ export class MovieList extends Component<Props, State> {
         )}
       </div>
     );
-  }
 }

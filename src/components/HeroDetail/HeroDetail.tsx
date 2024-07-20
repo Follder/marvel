@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import "./HeroDetail.scss";
 import cn from "classnames";
 import { Button } from "../Button/Button";
@@ -13,129 +13,94 @@ interface Props {
   charId: number | null;
 }
 
-interface State {
-  char: Character | null;
-  loading: boolean;
-  error: string | null;
-}
+export const HeroDetail: React.FC<Props> = ({ charId }) => {
+  const [char, setChar] = useState<Character | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export class HeroDetail extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
+  const marvelService = new MarvelService();
 
-    this.state = {
-      char: null,
-      loading: true,
-      error: "",
-    };
-  }
+  const updateChar = () => {
+    setLoading(true);
 
-  marvelService = new MarvelService();
-
-  updateChar = () => {
-    this.setState({ loading: true });
-
-    if (this.props.charId) {
-      this.marvelService
-        .getCharacter(this.props.charId)
+    if (charId) {
+      marvelService
+        .getCharacter(charId)
         .then((res) => {
-          this.setState({ loading: false, char: res });
+          setLoading(false);
+          setChar(res);
         })
         .catch(() => {
-          this.setState({
-            error: "Something went wrong. Can`t get a hero",
-            loading: true,
-          });
+          setLoading(true);
         });
     }
   };
 
-  componentDidMount(): void {
-    this.updateChar();
+  useEffect(() => {
+    updateChar();
+  }, [charId]);
+
+  if (!charId) {
+    return (
+      <div className="hero-detail">
+        <Skeleton />
+      </div>
+    );
   }
 
-  componentDidUpdate(prevProps: Readonly<Props>): void {
-    if (prevProps.charId !== this.props.charId) {
-      this.updateChar();
-    }
-  }
-
-  render() {
-    const { char, loading } = this.state;
-
-    if (!this.props.charId) {
-      return (
-        <div className="hero-detail">
-          <Skeleton />
+  if (!char) {
+    return (
+      <div className="hero-detail">
+        <div className="hero-detail__loader">
+          <Loader />
         </div>
-      );
-    }
+      </div>
+    );
+  }
 
-    if (!char) {
-      return (
-        <div className="hero-detail">
+  const { name, thumbnail, homepage, wiki, description, comics } = char;
+  const isNotFound = char.thumbnail.includes("image_not_available");
+  const isNotAvailible = char.thumbnail.includes("4c002e0305708");
+
+  return (
+    <>
+      <div className="hero-detail">
+        {loading && (
           <div className="hero-detail__loader">
             <Loader />
           </div>
-        </div>
-      );
-    }
-
-    const { name, thumbnail, homepage, wiki, description, comics } = char;
-
-    const isNotAvailible = char.thumbnail.includes("image_not_available")
-      ? true
-      : false;
-
-    return (
-      <>
-        <div className="hero-detail">
-          {loading ? (
-            <div className="hero-detail__loader">
-              <Loader />
-            </div>
-          ) : (
-            <>
-              <div className="hero-detail__header">
-                <div className="hero-detail__img">
-                  <img
-                    src={thumbnail}
-                    alt={name}
-                    className={cn("hero-item__image_pos-center", {
-                      "hero-item__image_pos-left": isNotAvailible,
-                    })}
-                  />
-                </div>
-                <div className="hero-detail__wrapper">
-                  <h2 className="hero-detail__name">{name}</h2>
-                  <div className="hero-detail__btns">
-                    <a href={homepage}>
-                      <Button
-                        width="102px"
-                        height="38px"
-                        color="#9F0013"
-                        text="homepage"
-                      />
-                    </a>
-                    <a href={wiki}>
-                      <Button
-                        width="102px"
-                        height="38px"
-                        color="#5C5C5C"
-                        text="wiki"
-                      />
-                    </a>
-                  </div>
+        )}
+        {!loading && (
+          <>
+            <div className="hero-detail__header">
+              <div className="hero-detail__img">
+                <img
+                  src={thumbnail}
+                  alt={name}
+                  className={cn("hero-item__image_pos-center", {
+                    "hero-item__image_pos-right": isNotAvailible,
+                    "hero-item__image_pos-left": isNotFound,
+                  })}
+                />
+              </div>
+              <div className="hero-detail__wrapper">
+                <h2 className="hero-detail__name">{name}</h2>
+                <div className="hero-detail__btns">
+                  <a href={homepage}>
+                    <Button text="homepage" />
+                  </a>
+                  <a href={wiki}>
+                    <Button color="#5C5C5C" text="wiki" />
+                  </a>
                 </div>
               </div>
-              <div className="hero-detail__description">{description}</div>
-              <MovieList comics={comics} />
-            </>
-          )}
-        </div>
+            </div>
+            <div className="hero-detail__description">{description}</div>
+            <MovieList comics={comics} />
+          </>
+        )}
+      </div>
 
-        <Form />
-      </>
-    );
-  }
-}
+      <Form />
+    </>
+  );
+};

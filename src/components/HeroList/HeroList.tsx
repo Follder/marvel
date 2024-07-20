@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 import { HeroItem } from "../HeroItem/HeroItem";
 import React from "react";
 import "./HeroList.scss";
@@ -7,104 +7,76 @@ import { Character } from "../../types/Character";
 import { Loader } from "../Loader/Loader";
 import { Button } from "../Button/Button";
 
-interface State {
-  characters: Character[];
-  loading: boolean;
-  error: string | null;
-  offset: number;
-  newLoading: boolean;
-}
-
 interface Props {
   setHero: (charId: number) => void;
   focusHero: number | null;
 }
 
-export class HeroList extends Component<Props, State> {
-  state = {
-    characters: [],
-    loading: true,
-    error: null,
-    offset: 230,
-    newLoading: false,
+export const HeroList: React.FC<Props> = ({ setHero, focusHero }) => {
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [offset, setOffset] = useState(230);
+  const [newLoading, setNewLoading] = useState(false);
+
+  const marvelService = new MarvelService();
+
+  const getCharacters = (offset: number) => {
+    setNewLoading(true);
+    marvelService.getAllCharacters(offset).then(onCharListLoaded);
   };
 
-  marvelService = new MarvelService();
-
-  getCharacters = (offset: number) => {
-    this.setState({ newLoading: true });
-    this.marvelService.getAllCharacters(offset).then(this.onCharListLoaded);
-  };
-
-  isSimilar = (res: Character[], characters: Character[]): boolean => {
+  const isSimilar = (res: Character[], characters: Character[]): boolean => {
     return res.some((newChar) =>
       characters.some((existingChar) => newChar.id === existingChar.id)
     );
   };
 
-  onCharListLoaded = (res: Character[]) => {
-    this.setState(({ characters, offset }) => {
-      const isSimilar = this.isSimilar(res, characters);
+  const onCharListLoaded = (res: Character[]) => {
+    const similar = isSimilar(res, characters);
 
-      if (isSimilar) {
-        return {
-          characters: [...characters],
-          loading: false,
-          offset: offset,
-          newLoading: false,
-        };
-      }
-
-      return {
-        characters: [...characters, ...res],
-        loading: false,
-        offset: offset + 9,
-        newLoading: false,
-      };
-    });
-  };
-
-  handleNewCaracters = () => {
-    this.getCharacters(this.state.offset);
-  };
-
-  componentDidMount(): void {
-    this.getCharacters(this.state.offset);
-  }
-
-  render() {
-    const { characters, newLoading, loading } = this.state;
-
-    if (!characters) {
-      throw new Error("new error");
+    if (similar) {
+      setCharacters((characters) => [...characters]);
+      setOffset((offset) => offset);
+    } else {
+      setCharacters((characters) => [...characters, ...res]);
+      setOffset((offset) => offset + 9);
     }
 
-    return (
-      <div className="hero-list">
-        {loading ? (
-          <div className="hero-list__loader">
-            <Loader />
-          </div>
-        ) : (
-          characters.map((char: Character) => {
-            return (
-              <HeroItem
-                char={char}
-                setHero={this.props.setHero}
-                focusHero={this.props.focusHero}
-                key={char.id}
-              />
-            );
-          })
-        )}
+    setLoading(false);
+    setNewLoading(false);
+  };
 
-        <div
-          className="hero-list__button"
-          onClick={() => this.handleNewCaracters()}
-        >
-          <Button text="load more" isDisabled={newLoading} />
+  const handleNewCaracters = () => {
+    getCharacters(offset);
+  };
+
+  useEffect(() => {
+    getCharacters(offset);
+  }, []);
+
+  return (
+    <div className="hero-list">
+      {loading && (
+        <div className="hero-list__loader">
+          <Loader />
         </div>
+      )}
+
+      {!loading &&
+        characters.map((char: Character) => {
+          return (
+            <HeroItem
+              char={char}
+              setHero={setHero}
+              focusHero={focusHero}
+              key={char.id}
+            />
+          );
+        })}
+
+      <div className="hero-list__button" onClick={handleNewCaracters}>
+        <Button text="load more" isDisabled={newLoading} />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};

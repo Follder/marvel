@@ -1,5 +1,5 @@
 import React from "react";
-import '../../utils/animate.scss'
+import '../../styles/animate.scss'
 import './Skeleton.scss'
 
 export const Skeleton = () => {

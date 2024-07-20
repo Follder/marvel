@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useRef } from "react";
 import "./HeroItem.scss";
 import cn from "classnames";
 import { Character } from "../../types/Character";
@@ -9,35 +9,25 @@ type Props = {
   focusHero: number | null;
 };
 
-export class HeroItem extends Component<Props> {
-  focusRef = React.createRef<HTMLInputElement>();
+export const HeroItem: React.FC<Props> = ({char, setHero, focusHero}) => {
+  const focusRef = useRef<HTMLInputElement>(null);
 
-  componentDidUpdate(prevProps: Props): void {
-    if (prevProps.focusHero !== this.props.focusHero) {
-      this.focusRef.current?.classList.remove("hero-item_active");
+  useEffect(() => {
+    focusRef.current?.classList.remove('hero-item_active')
 
-      if (this.props.focusHero === this.props.char.id) {
-        
-        if (this.focusRef.current) {
-          this.focusRef.current?.classList.add("hero-item_active");
-          this.focusRef.current.focus();
-        }
-      }
+    if (focusHero === char.id) {
+      focusRef.current?.classList.add('hero-item_active');
+      focusRef.current?.focus();
     }
+  }, [focusHero])
 
-  }
-
-  render() {
-    const { char, setHero } = this.props;
-
-    const isNotAvailible = char.thumbnail.includes("image_not_available")
-      ? true
-      : false;
+  const isNotFound = char.thumbnail.includes("image_not_available");
+  const isNotAvailible = char.thumbnail.includes("4c002e0305708");
 
     return (
       <div
         onFocus={() => setHero(char.id)}
-        ref={this.focusRef}
+        ref={focusRef}
         tabIndex={0}
         className="hero-item"
       >
@@ -46,12 +36,12 @@ export class HeroItem extends Component<Props> {
             src={char.thumbnail}
             alt={char.name}
             className={cn("hero-item__image_pos-center", {
-              "hero-item__image_pos-left": isNotAvailible,
+              "hero-item__image_pos-right": isNotAvailible,
+              "hero-item__image_pos-left": isNotFound,
             })}
           />
         </div>
         <h3 className="hero-item__name">{char.name}</h3>
       </div>
     );
-  }
 }
